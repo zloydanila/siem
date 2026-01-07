@@ -1,19 +1,22 @@
 services:
   db-server:
-    build: ./siem
+    build: 
+      context: ./siem
+      dockerfile: Dockerfile
     ports:
-      - "18080:8080"
+      - "8080:8080"
     volumes:
       - db-data:/app/data
-      - ./siem/schema.json:/app/schema.json:ro
 
   siem-ui:
-    build: ./siem/siemcore
+    build:
+      context: .
+      dockerfile: ./Dockerfile
     ports:
-      - "8090:8088"
+      - "8088:8088"
     environment:
       CPPDB_ADDR: db-server:8080
-      SIEM_HTTP_ADDR: 0.0.0.0:8088  # ← КРИТИЧНО!
+      SIEM_HTTP_ADDR: 0.0.0.0:8088
       SIEM_USER: admin
       SIEM_PASS: admin123
     depends_on:

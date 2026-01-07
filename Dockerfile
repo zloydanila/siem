@@ -6,19 +6,20 @@ RUN apt-get update && apt-get install -y \
   curl -L https://golang.org/dl/go1.23.6.linux-amd64.tar.gz | tar -C /usr/local -xzf -
 
 ENV PATH="/usr/local/go/bin:${PATH}"
-
 WORKDIR /app
 
-COPY siem/ ./siem
-COPY siem/siemcore/ ./siemcore
+COPY siem/ ./siem/
 COPY siem/schema.json .
 
 # Build DB Server
 RUN cd siem && mkdir build && cd build && cmake .. && make -j$(nproc) && cp db_server ../../
 
-# Build Go UI (правильный путь!)
-WORKDIR /app/siemcore
-RUN go mod download && go build -ldflags="-s -w" -o ../ui ./cmd/siemcore
+# Build Go UI
+RUN cd siem/siemcore && go mod download && \
+    go build -ldflags="-s -w" -o ../../ui ./cmd/siemcore
+
+# ✅ КОПИРУЕМ WEB FILES!
+RUN cp -r siem/siemcore/web ./web
 
 WORKDIR /app
 RUN chmod +x db_server ui

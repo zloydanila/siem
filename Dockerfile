@@ -16,12 +16,12 @@ COPY siem/schema.json .
 # Build DB Server
 RUN cd siem && mkdir build && cd build && cmake .. && make -j$(nproc) && cp db_server ../../
 
-# Build Go UI
+# Build Go UI (правильный путь!)
 WORKDIR /app/siemcore
-RUN go mod download && go build -ldflags="-s -w" -o ../siemcore ./cmd/siemcore
+RUN go mod download && go build -ldflags="-s -w" -o ../ui ./cmd/siemcore
 
 WORKDIR /app
-RUN chmod +x db_server siemcore
+RUN chmod +x db_server ui
 
 EXPOSE 8080 8088
-CMD ./db_server --port 8080 --schema ./schema.json --data-root ./data & ./siemcore
+CMD ./db_server --port 8080 --schema ./schema.json --data-root ./data & ./ui

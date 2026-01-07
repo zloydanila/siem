@@ -1,24 +1,27 @@
 FROM ubuntu:24.04
-RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
-  build-essential cmake pkg-config nlohmann-json3-dev curl ca-certificates \
-  golang-go && rm -rf /var/lib/apt/lists/*
+
+RUN apt-get update && apt-get install -y \
+  build-essential cmake pkg-config nlohmann-json3-dev curl \
+  golang-1.23-go ca-certificates && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
-COPY siem/ .
 
-# Build C++ DB
+# Build C++ DB Server
+COPY siem/ ./siem
+WORKDIR /app/siem
 RUN mkdir build && cd build \
   && cmake -DCMAKE_BUILD_TYPE=Release .. \
-  && make -j$(nproc)
+  && make -j$(nproc) db_server
 
 # Build Go UI
+WORKDIR /app
+COPY siem/siemcore/ ./siemcore/
 WORKDIR /app/siemcore
-COPY siem/siemcore/ .
-RUN go mod download || true
+RUN go mod download
 RUN CGO_ENABLED=0 go build -ldflags="-s -w" -o ../siemcore ./cmd/siemcore
 
 WORKDIR /app
-COPY siem/siemcore/web ./siemcore/web
+COPY siem/schema.json .
 
 EXPOSE 8080 8088
-CMD sh -c "./build/db_server --port 8080 --schema ./schema.json --data-root ./data & ./siemcore"
+CMD ./siem/build/db_server --port 8080 --schema ./schema.json --data-root ./data & ./siemcore

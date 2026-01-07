@@ -1,5 +1,6 @@
 FROM ubuntu:24.04
 
+# Go + deps
 RUN apt-get update && apt-get install -y \
   build-essential cmake pkg-config nlohmann-json3-dev ca-certificates curl && \
   rm -rf /var/lib/apt/lists/* && \
@@ -8,21 +9,21 @@ RUN apt-get update && apt-get install -y \
 ENV PATH="/usr/local/go/bin:${PATH}"
 
 WORKDIR /app
+
+# Копируем исходники
 COPY siem/ ./siem
-
-RUN cd siem && mkdir build && cd build && \
-  cmake -DCMAKE_BUILD_TYPE=Release .. && \
-  make -j$(nproc) db_server
-
-COPY siem/siemcore/ ./siemcore/
-WORKDIR /app/siemcore
-RUN go mod download && \
-  CGO_ENABLED=0 go build -ldflags="-s -w" -o ../siemcore ./cmd/siemcore && \
-  chmod +x ../siemcore
-
-WORKDIR /app
+COPY siem/siemcore/ ./siemcore
 COPY siem/schema.json .
-RUN chmod +x ./siem/build/db_server
+
+# Build DB Server
+RUN cd siem && mkdir build && cd build && cmake .. && make -j$(nproc) db_server && \
+  cp db_server ../../
+
+# Build Go UI
+RUN cd siemcore && go mod download && go build -ldflags="-s -w" -o ../siemcore ./cmd/siemcore
+
+# Права!
+RUN chmod +x db_server siemcore
 
 EXPOSE 8080 8088
-CMD ./siem/build/db_server --port 8080 --schema ./schema.json --data-root ./data & ./siemcore
+CMD ./db_server --port 8080 --schema ./schema.json --data-root ./data & ./siemcore

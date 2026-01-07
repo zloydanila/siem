@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Вход в SIEM</title>
+  <link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+  <main class="container center">
+    <section class="card auth">
+      <div class="cardtitle">Вход в SIEM Core</div>
+
+      <form id="loginForm" class="form">
+        <label class="label">Логин</label>
+        <input id="username" class="input full" autocomplete="username" required>
+
+        <label class="label">Пароль</label>
+        <input id="password" class="input full" type="password" autocomplete="current-password" required>
+
+        <div class="row">
+          <button class="btn full" type="submit">Войти</button>
+        </div>
+
+        <div id="err" class="err" role="alert" aria-live="polite"></div>
+
+      </form>
+    </section>
+  </main>
+
+  <script src="/static/login.js"></script>
+</body>
+</html>

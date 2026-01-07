@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>События SIEM</title>
+  <link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">SIEM Core</div>
+    <nav class="nav">
+      <a class="navlink" href="/dashboard">Панель</a>
+      <a class="navlink active" href="/events">События</a>
+      <a class="navlink danger" href="/logout" id="logoutLink">Выйти</a>
+
+    </nav>
+  </header>
+
+  <main class="container wide">
+    <section class="card">
+      <div class="row">
+        <div class="cardtitle">События</div>
+        <div class="grow"></div>
+        <a class="btn" id="exportCsv" href="/api/events.csv?limit=50000">Экспорт CSV</a>
+        <a class="btn" id="exportJson" href="/api/events.json?limit=50000">Экспорт JSON</a>
+        <button id="reload" class="btn">Обновить</button>
+      </div>
+
+      <div class="row">
+        <input id="q" class="input" placeholder="Поиск (поддерживает regex)">
+        <label class="muted"><input id="re" type="checkbox"> regex</label>
+
+        <input id="fUser" class="input" placeholder="пользователь">
+        <input id="fHost" class="input" placeholder="хост">
+        <input id="fType" class="input" placeholder="тип">
+        <input id="fSev"  class="input" placeholder="критичность">
+        <input id="fProc" class="input" placeholder="процесс">
+      </div>
+
+      <div class="tablewrap">
+        <table class="table" id="eventsTable">
+          <thead>
+            <tr>
+              <th>Время</th>
+              <th>Агент</th>
+              <th>Хост</th>
+              <th>Пользователь</th>
+              <th>Процесс</th>
+              <th>Тип</th>
+              <th>Критичность</th>
+              <th>Источник</th>
+              <th>Сырой лог</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <div class="muted" id="statusLine"></div>
+    </section>
+  </main>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

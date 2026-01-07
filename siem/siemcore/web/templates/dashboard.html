@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Панель SIEM</title>
+  <link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">SIEM Core</div>
+    <nav class="nav">
+      <a class="navlink active" href="/dashboard">Панель</a>
+      <a class="navlink" href="/events">События</a>
+      <a class="navlink danger" href="/logout" id="logoutLink">Выйти</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <section class="grid">
+      <div class="card span3">
+        <div class="cardtitle">События (за 24 часа)</div>
+        <div class="chartbox">
+          <canvas id="eventsPerHour"></canvas>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="cardtitle">Топ типов событий</div>
+        <div class="chartbox">
+          <canvas id="topEventTypesChart"></canvas>
+        </div>
+        <div id="topEventTypes" class="list" style="margin-top:10px"></div>
+      </div>
+
+      <div class="card">
+        <div class="cardtitle">Критичность (за 24 часа)</div>
+        <div class="chartbox">
+          <canvas id="severityChart"></canvas>
+        </div>
+        <div id="severity" class="list" style="margin-top:10px"></div>
+      </div>
+
+      <div class="card">
+        <div class="cardtitle">Активные агенты</div>
+        <div id="activeAgents" class="list"></div>
+      </div>
+
+
+      <div class="card">
+        <div class="cardtitle">Топ пользователей</div>
+        <div id="topUsers" class="list"></div>
+      </div>
+
+
+      <div class="card">
+        <div class="cardtitle">Хосты (за 24 часа)</div>
+        <div id="hosts24h" class="list"></div>
+      </div>
+
+      <div class="card">
+        <div class="cardtitle">Топ процессов (за 24 часа)</div>
+        <div id="topProcesses24h" class="list"></div>
+      </div>
+
+
+      <div class="card span3">
+        <div class="cardtitle">Последние входы</div>
+        <div class="tablewrap">
+          <table class="table" id="lastLogins">
+            <thead>
+              <tr>
+                <th>Время</th>
+                <th>Хост</th>
+                <th>Пользователь</th>
+                <th>Процесс</th>
+                <th>Тип</th>
+                <th>Критичность</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="/static/chart.umd.min.js"></script>
+  <script src="/static/app.js"></script>
+</body>
+</html>

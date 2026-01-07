@@ -1,0 +1,23 @@
+services:
+  db-server:
+    build: ./siem
+    ports:
+      - "18080:8080"
+    volumes:
+      - db-data:/app/data
+      - ./siem/schema.json:/app/schema.json:ro
+
+  siem-ui:
+    build: ./siem/siemcore
+    ports:
+      - "8090:8088"
+    environment:
+      CPPDB_ADDR: db-server:8080
+      SIEM_HTTP_ADDR: 0.0.0.0:8088  # ← КРИТИЧНО!
+      SIEM_USER: admin
+      SIEM_PASS: admin123
+    depends_on:
+      - db-server
+
+volumes:
+  db-data:

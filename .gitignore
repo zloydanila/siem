@@ -1,0 +1,8 @@
+siem/build/
+siem/siem_agent/CMakeFiles/
+*.o
+*.a
+*.log
+.vscode/
+.idea/
+go.sum

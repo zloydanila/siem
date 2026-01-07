@@ -2,7 +2,8 @@ services:
   db-server:
     build: 
       context: ./siem
-      dockerfile: Dockerfile
+      dockerfile: ./Dockerfile
+    container_name: siem-db-server
     ports:
       - "8080:8080"
     volumes:
@@ -12,10 +13,12 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile
+    container_name: siem-ui
     ports:
       - "8088:8088"
     environment:
       CPPDB_ADDR: db-server:8080
+      CPPDB_RAW: "true"
       SIEM_HTTP_ADDR: 0.0.0.0:8088
       SIEM_USER: admin
       SIEM_PASS: admin123
@@ -24,3 +27,4 @@ services:
 
 volumes:
   db-data:
+    driver: local

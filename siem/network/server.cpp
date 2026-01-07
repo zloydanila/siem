@@ -200,15 +200,93 @@ static json process_request(const string& line){
     return err("неизвестная операция");
 }
 
+static string parse_http_request(const string& request_line, string& body) {
+
+    size_t first_space = request_line.find(' ');
+    size_t second_space = request_line.rfind(' ');
+    
+    if(first_space == string::npos || second_space == string::npos) {
+        return "";
+    }
+    
+    string method = request_line.substr(0, first_space);
+    string path = request_line.substr(first_space + 1, second_space - first_space - 1);
+    
+    return path;
+}
+
+static bool send_http_response(int fd, const json& response, int status_code = 200) {
+    string json_body = response.dump();
+    
+    string http_response = "HTTP/1.1 " + to_string(status_code) + " OK\r\n";
+    http_response += "Content-Type: application/json\r\n";
+    http_response += "Content-Length: " + to_string(json_body.size()) + "\r\n";
+    http_response += "Connection: close\r\n";
+    http_response += "Access-Control-Allow-Origin: *\r\n";
+    http_response += "\r\n";
+    http_response += json_body;
+    
+    return send_all(fd, http_response);
+}
+
 static void handle_client(int client_fd){
     for(;;){
         string line;
         if(!read_line(client_fd, line)) break;
         if(line.empty()) continue;
 
-        json resp = process_request(line);
-        string reply = resp.dump() + "\n";
-        if(!send_all(client_fd, reply)) break;
+
+        if(line.find("GET") == 0 || line.find("POST") == 0) {
+
+            while(true) {
+                string header;
+                if(!read_line(client_fd, header)) break;
+                if(header.empty()) break; 
+            }
+            
+
+            if(line.find("GET /api/events") == 0) {
+                try {
+                    Database& db = get_db_by_name("siem");
+                    Collection& coll = db.get_collection("events");
+                    auto docs = coll.find(json::object(), json::object(), json::object(), 0);
+                    
+                    json data = json::array();
+                    for(unsigned int i = 0; i < docs.get_size(); i++){
+                        data.push_back(docs[i]);
+                    }
+                    
+                    json resp = ok("события получены", data, (int)docs.get_size());
+                    send_http_response(client_fd, resp);
+                } catch(const exception& e) {
+                    json resp = err(e.what());
+                    send_http_response(client_fd, resp, 500);
+                }
+            }
+            
+            else if(line.find("POST /api/events") == 0) {
+                // Читаем тело запроса
+                string body_line;
+                if(read_line(client_fd, body_line)) {
+                    json resp = process_request(body_line);
+                    send_http_response(client_fd, resp);
+                }
+            }
+           
+            else {
+                string body_line;
+                if(read_line(client_fd, body_line)) {
+                    json resp = process_request(body_line);
+                    send_http_response(client_fd, resp);
+                }
+            }
+        }
+        else {
+          
+            json resp = process_request(line);
+            string reply = resp.dump() + "\n";
+            if(!send_all(client_fd, reply)) break;
+        }
     }
     close(client_fd);
 }

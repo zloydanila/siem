@@ -11,14 +11,11 @@ WORKDIR /app
 COPY siem/ ./siem/
 COPY siem/schema.json .
 
-# Build DB Server
 RUN cd siem && mkdir build && cd build && cmake .. && make -j$(nproc) && cp db_server ../../
 
-# Build Go UI
 RUN cd siem/siemcore && go mod download && \
     go build -ldflags="-s -w" -o ../../ui ./cmd/siemcore
 
-# ✅ КОПИРУЕМ WEB FILES!
 RUN cp -r siem/siemcore/web ./web
 
 WORKDIR /app

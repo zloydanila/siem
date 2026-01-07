@@ -1,7 +1,12 @@
 FROM ubuntu:24.04
+
+# Устанавливаем Go правильно + зависимости
 RUN apt-get update && apt-get install -y \
-  build-essential cmake pkg-config nlohmann-json3-dev \
-  golang-1.23-go ca-certificates && rm -rf /var/lib/apt/lists/*
+  build-essential cmake pkg-config nlohmann-json3-dev ca-certificates curl && \
+  rm -rf /var/lib/apt/lists/* && \
+  curl -L https://golang.org/dl/go1.23.6.linux-amd64.tar.gz | tar -C /usr/local -xzf -
+
+ENV PATH="/usr/local/go/bin:${PATH}"
 
 WORKDIR /app
 COPY siem/ ./siem

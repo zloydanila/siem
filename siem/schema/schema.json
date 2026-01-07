@@ -1,0 +1,29 @@
+{
+  "name": "siem",
+  "tuples_limit": 1000000,
+  "structure": {
+    "securityevents": {
+      "_id": "str",
+      "agentid": "str",
+      "packettimestamp": "timestamp",
+      "timestamp": "timestamp",
+      "hostname": "str",
+      "source": "str",
+      "eventtype": "str",
+      "severity": "str",
+      "user": "str",
+      "process": "str",
+      "command": "str",
+      "rawlog": "str",
+
+      "srcip": "str",
+      "dstip": "str",
+      "srcport": "int",
+      "dstport": "int",
+      "protocol": "str",
+      "outcome": "str",
+      "ruleid": "str",
+      "rulename": "str"
+    }
+  }
+}

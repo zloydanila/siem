@@ -1,0 +1,13 @@
+siemcore
+db_server
+*.o
+*.a
+vendor/
+.vscode/
+.idea/
+*.swp
+*~
+.DS_Store
+build/
+data/
+*.log

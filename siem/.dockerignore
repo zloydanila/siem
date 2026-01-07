@@ -1,0 +1,12 @@
+.git
+.gitignore
+.vscode
+.idea
+*.swp
+*~
+.DS_Store
+build/
+db_server/build
+siem_agent/
+data/
+*.log

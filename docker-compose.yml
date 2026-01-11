@@ -1,31 +1,45 @@
 services:
   db-server:
-    build: 
+    build:
       context: ./siem
       dockerfile: ./Dockerfile
     container_name: siem-db-server
-    ports:
-      - "8080:8080"
-    volumes:
-      - db-data:/app/data
     environment:
       - PORT=8080
+    volumes:
+      - db-data:/app/data
+    ports:
+      - "8080:8080"
+    expose:
+      - "8080"
 
   siem-ui:
     build:
       context: .
       dockerfile: ./Dockerfile
     container_name: siem-ui
-    ports:
-      - "8088:8088"
     environment:
       CPPDB_ADDR: db-server:8080
       CPPDB_RAW: "true"
-      SIEM_HTTP_ADDR: 0.0.0.0:8088
+      SIEM_HTTP_ADDR: 0.0.0.0:8082
       SIEM_USER: admin
       SIEM_PASS: admin123
     depends_on:
       - db-server
+    ports:
+      - "8082:8082"
+    expose:
+      - "8082"
+
+  nginx:
+    image: nginx:alpine
+    container_name: siem-nginx
+    depends_on:
+      - siem-ui
+    ports:
+      - "8081:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
 
 volumes:
   db-data:

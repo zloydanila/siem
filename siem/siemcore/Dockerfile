@@ -12,5 +12,5 @@ WORKDIR /app
 COPY --from=builder /app/siemcore .
 COPY web/static ./web/static
 COPY web/templates ./web/templates
-EXPOSE 8088
+EXPOSE 8082
 CMD ["./siemcore"]

@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install -y \
 
 WORKDIR /app
 
-COPY . .
+COPY siem/ /app
 
 RUN mkdir build && cd build && \
   cmake -DCMAKE_BUILD_TYPE=Release .. && \

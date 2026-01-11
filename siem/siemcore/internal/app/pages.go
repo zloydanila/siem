@@ -1,4 +1,3 @@
-// internal/app/pages.go
 package app
 
 import (
@@ -41,8 +40,6 @@ func (a *App) handleEventsPage(w http.ResponseWriter, r *http.Request) {
 	w.Write(b)
 }
 
-
-
 func (a *App) handleLogout(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0")
 	w.Header().Set("Pragma", "no-cache")
@@ -50,8 +47,6 @@ func (a *App) handleLogout(w http.ResponseWriter, r *http.Request) {
 	
 	http.Redirect(w, r, "/login", http.StatusSeeOther)
 }
-
-
 
 func (a *App) handleLogoutTrigger(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Cache-Control", "no-store, must-revalidate, max-age=0")

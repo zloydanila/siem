@@ -8,7 +8,8 @@ docker compose ps
 # 2. Заполнение данных
 
 cd siem/siemcore/cmd/gen_events
-DB_ADDR=localhost:8080 go run main.go
+ionin@ionin-MCLF-XX:~/Рабочий стол/siem/siem/siemcore/cmd/gen_events$ DB_ADDR=centerbeam.proxy.rlwy.net:35453 go run main.go
+
 # 3. Открыть браузер
 # http://localhost:8090
 # admin / admin123

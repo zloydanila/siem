@@ -53,7 +53,6 @@ func filterLast24h(events []Event, cut time.Time) []Event {
 
 func buildDashboard(events []Event) Dashboard {
 	eventsPerHour := make([]int, 24)
-
 	hosts := map[string]int{}
 	severity := map[string]int{}
 	topTypes := map[string]int{}

@@ -12,7 +12,7 @@ import (
 )
 
 func main() {
-	// ✅ ИЗМЕНЕНИЕ: default = 0.0.0.0:8088 (доступно с хоста)
+	
 	httpAddr := getenv("SIEM_HTTP_ADDR", "0.0.0.0:8088")
 	dbAddr := getenv("CPPDB_ADDR", "127.0.0.1:8080")
 
